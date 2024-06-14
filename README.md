@@ -6,6 +6,107 @@ document.addEventListener('DOMContentLoaded', () => {
     function fetchEmployees() {
         simple_fetch('http://localhost:6480/tp_api_rest/api/employees', { responseType: 'json' })
             .then(data => {
+                employeeList.innerHTML = ''; // Clear previous list
+                data.forEach(employee => {
+                    const employeeElement = document.createElement('div');
+                    employeeElement.textContent = `Nom: ${employee.name}, Email: ${employee.email}, Téléphone: ${employee.phone}, Adresse: ${employee.address}`;
+                    employeeList.appendChild(employeeElement);
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des employés:', error);
+                employeeList.innerHTML = 'Erreur lors de la récupération des employés.';
+            });
+    }
+
+    // Fonction pour ajouter un nouvel employé
+    addEmployeeForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(addEmployeeForm);
+        const employeeData = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            address: formData.get('address')
+        };
+
+        simple_fetch('http://localhost:6480/tp_api_rest/api/employees', {
+            postJson: employeeData,
+            responseType: 'json'
+        })
+            .then(data => {
+                console.log('Employé ajouté:', data);
+                fetchEmployees(); // Refresh the employee list
+                addEmployeeForm.reset(); // Clear the form
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'ajout de l\'employé:', error);
+                alert('Erreur lors de l\'ajout de l\'employé.');
+            });
+    });
+
+    // Initialiser la liste des employés
+    fetchEmployees();
+});
+
+// Définition de la fonction simple_fetch
+function simple_fetch(url, options) {
+    const responseType = options?.responseType ?? 'json';
+    if (options?.responseType) { delete options.responseType; }
+
+    if (options?.get) {
+        for (const [key, value] of Object.entries(options.get)) {
+            if (typeof value !== 'number' && typeof value !== 'string') {
+                return Promise.reject('Error: simple_fetch: value for "' + key + '" is not of allowed type.');
+            }
+        }
+        options.method = 'GET';
+        url += url.includes('?') ? '&' : '?';
+        url += (new URLSearchParams(options.get)).toString();
+        delete options.get;
+    }
+
+    if (options?.post) {
+        options.method = 'POST';
+        const data = new FormData();
+        for (const [key, value] of Object.entries(options.post)) {
+            if (typeof value !== 'number' && typeof value !== 'string') {
+                return Promise.reject('Error: simple_fetch: value for "' + key + '" is not of allowed type.');
+            }
+            data.append(key, value);
+        }
+        delete options.post;
+        options.body = data;
+    }
+
+    if (options?.postJson) {
+        options.method = 'POST';
+        if (!options.headers) { options.headers = {}; }
+        options.headers['Accept'] = 'application/json';
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(options.postJson);
+        delete options.postJson;
+    }
+
+    return fetch(url, options).then(response => {
+        if (!response.ok) {
+            return response[responseType]().then((r) => {
+                return Promise.reject(r);
+            });
+        }
+        return response[responseType]();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const employeeList = document.getElementById('employee-list');
+    const addEmployeeForm = document.getElementById('add-employee-form');
+
+    // Fonction pour obtenir et afficher la liste des employés
+    function fetchEmployees() {
+        simple_fetch('http://localhost:6480/tp_api_rest/api/employees', { responseType: 'json' })
+            .then(data => {
                 employeeList.innerHTML = '';
                 data.forEach(employee => {
                     const employeeElement = document.createElement('div');
