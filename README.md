@@ -1,50 +1,24 @@
+<h1>Guide pour utiliser wamp et sa bdd</h1>
 
-document.addEventListener('DOMContentLoaded', () => {
-    const employeeList = document.getElementById('employee-list');
-    const addEmployeeForm = document.getElementById('add-employee-form');
+<h2>1-Installer WampServer et ses packages et le lancer</h2>
+<p>Il faut en premier temps installer les packages et les lancer</p>
+<p>Pour les packages il faut sélectionner le dossier : <i>All VC Redistribuable Packages (x86_x64) (32 & 64bits)</i> en bas de page</p>
+<p>Lien des packages  : https://wampserver.aviatechno.net/</p>
+<p>Lien de wampserver : https://www.wampserver.com/</p>
+<p>Une fois installé vous pouvez lancer Wamp et ce dernier sera affiché en bas à droite dans les icônes cachées</p>
+<p>Vous n'avez plus qu'à cliquer sur localhost</p>
 
-    // Fonction pour obtenir et afficher la liste des employés
-    function fetchEmployees() {
-        simple_fetch('http://localhost:6480/tp_api_rest/api/employees', { responseType: 'json' })
-            .then(data => {
-                employeeList.innerHTML = ''; // Clear the list before adding new items
-                data.forEach(employee => {
-                    const employeeElement = document.createElement('div');
-                    employeeElement.textContent = `Nom: ${employee.name}, Email: ${employee.email}, Téléphone: ${employee.phone}, Adresse: ${employee.address}`;
-                    employeeList.appendChild(employeeElement);
-                });
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération des employés:', error);
-            });
-    }
+<h2>2-Autoriser les liens sur les projets</h2>
+<p>Faites un clic droit sur le logo wamp</p>
+<p>Puis il faut aller sur "Paramètre Wamp"</p>
+<p>Ensuite, "Attention: risqué"</p>
+<p>Puis il faut cocher la ligne "Autoriser liens sur projet d'accueil</p>
 
-    // Fonction pour ajouter un nouvel employé
-    addEmployeeForm.addEventListener('submit', (event) => {
-        event.preventDefault();
+<h2>3-Installer la bdd</h2>
+<p>Repartez sur le logo Wamp en bas à droite et sélectionner phpMyAdmin</p>
+<p>Renseignez l'identifiant "root" et ne mettez pas de mdp</p>
+<p>Une fois connecté, allez sur "nouvelle base de données", puis dans nom mettez "db_sas", et Créer</p>
+<p>En haut il y aura une case "SQL" où vous mettrez tout le contenu du fichier database.sql présent dans le dossier puis exécutez</p>
 
-        const formData = new FormData(addEmployeeForm);
-        const employeeData = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            phone: formData.get('phone'),
-            address: formData.get('adress')
-        };
-
-        simple_fetch('http://localhost:6480/tp_api_rest/api/employees', {
-            postJson: employeeData,
-            responseType: 'json'
-        })
-            .then(data => {
-                console.log('Employé ajouté:', data);
-                fetchEmployees();
-                addEmployeeForm.reset();
-            })
-            .catch(error => {
-                console.error('Erreur lors de l\'ajout de l\'employé:', error);
-            });
-    });
-
-    // Initialiser la liste des employés
-    fetchEmployees();
-});
+<h2>4-Explorer le site web</h2>
+<p>C'est bon vous pouvez lancer le site web avec localhost, puis sélectionner le nom du dossier contenant le code du site web</p>
