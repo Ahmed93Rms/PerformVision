@@ -1,6 +1,6 @@
 <h1>Guide pour utiliser wamp et sa bdd</h1>
 
-<h2>1-Installer WampServer et ses packages et le lancer</h2>
+<h2>1-Installer WampServer, ses packages et le lancer</h2>
 <p>Il faut en premier temps installer les packages et les lancer</p>
 <p>Pour les packages il faut sélectionner le dossier : <i>All VC Redistribuable Packages (x86_x64) (32 & 64bits)</i> en bas de page</p>
 <p>Lien des packages  : https://wampserver.aviatechno.net/</p>
